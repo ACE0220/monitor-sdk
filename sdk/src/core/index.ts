@@ -13,9 +13,9 @@ export default class Tracker {
     // 兜底
     private initDef(): DefaultOptions {
 
-        window.history['replaceState'] = createHistoryEvent('replaceState');
         window.history['pushState'] = createHistoryEvent('pushState');
-
+        window.history['replaceState'] = createHistoryEvent('replaceState');
+        
         return <DefaultOptions>{
             sdkVersion: Version.version,
             historyTracker: false,
@@ -48,10 +48,10 @@ export default class Tracker {
 
     private installTracker() {
         if (this.data.historyTracker) {
-            this.captureEvent(['pushState', 'replaceState', 'popState'], 'history-pv')
+            this.captureEvent(['pushState', 'replaceState', 'popstate'], 'history-pv')
         }
         if (this.data.hashTracker) {
-            this.captureEvent(['pushState'], 'history-pv')
+            this.captureEvent(['hashchange'], 'hash-pv')
         }
     }
 
