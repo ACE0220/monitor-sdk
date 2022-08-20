@@ -25,6 +25,14 @@ export default class Tracker {
         }
     }
 
+    public setUserId <T extends DefaultOptions['uuid']>(uuid: T) {
+        this.data.uuid = uuid;
+    }
+
+    public setExtra  <T extends DefaultOptions['extra']>(extra: T) {
+        this.data.extra = extra;
+    }
+
     private captureEvent <T>(mouseEventList: string[], targetKey: string, data?:T) {
         mouseEventList.forEach(ev => {
             window.addEventListener(ev, () => {
@@ -36,6 +44,9 @@ export default class Tracker {
     private installTracker() {
         if(this.data.historyTracker) {
             this.captureEvent(['pushState', 'replaceState', 'popState'], 'history-pv')
+        }
+        if(this.data.hashTracker) {
+            this.captureEvent(['pushState'], 'history-pv')
         }
     }
 }
