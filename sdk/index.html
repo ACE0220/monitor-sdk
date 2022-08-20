@@ -6,16 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="./dist/sdk.js"></script>
 </head>
 
 <body>
-    <script src="./dist/sdk.js"></script>
-    <script>
-        new Tracker({
-            requestUrl: 'http://localhost:9000/tracker',
-            historyTracker: true
-        })
-    </script>
+    <button target-key="btn">按钮</button>
+    <button>无添加</button>
+    
 </body>
+<script>
+    new Tracker({
+        requestUrl: 'http://localhost:9000/tracker',
+        historyTracker: true,
+        domTracker: true,
+    })
+</script>
 
 </html>

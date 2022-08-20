@@ -1,6 +1,8 @@
 import { DefaultOptions, Options, Version } from "../types/index";
 import { createHistoryEvent } from "../utils/pv";
 
+const MouseEventList: string[] = ['click', 'dbclick', 'contextmenu', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave', ]
+
 export default class Tracker {
 
     public data: Options;
@@ -36,7 +38,6 @@ export default class Tracker {
     private captureEvent<T>(mouseEventList: string[], targetKey: string, data?: T) {
         mouseEventList.forEach(ev => {
             window.addEventListener(ev, () => {
-                console.log('监听到了', ev);
                 this.reportTracker({
                     ev,
                     targetKey,
@@ -52,6 +53,9 @@ export default class Tracker {
         }
         if (this.data.hashTracker) {
             this.captureEvent(['hashchange'], 'hash-pv')
+        }
+        if(this.data.domTracker) {
+            this.targetKeyReport();
         }
     }
 
@@ -71,5 +75,20 @@ export default class Tracker {
         let blob = new Blob([JSON.stringify(params)], headers)
 
         navigator.sendBeacon(this.data.requestUrl, blob);
+    }
+
+    private targetKeyReport() {
+        MouseEventList.forEach(ev => {
+            window.addEventListener(ev, (e) => {
+                const target = e.target as HTMLElement;
+                const targetKey = target.getAttribute('target-key');
+                if(targetKey) {
+                    this.reportTracker({
+                        event:ev,
+                        targetKey
+                    })
+                }
+            })
+        })
     }
 }
