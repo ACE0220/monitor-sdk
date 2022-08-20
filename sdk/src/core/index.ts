@@ -1,7 +1,7 @@
 import { DefaultOptions, Options, Version } from "../types/index";
 import { createHistoryEvent } from "../utils/pv";
 
-const MouseEventList: string[] = ['click', 'dbclick', 'contextmenu', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave', ]
+const MouseEventList: string[] = ['click', 'dbclick', 'contextmenu', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave',]
 
 export default class Tracker {
 
@@ -17,7 +17,7 @@ export default class Tracker {
 
         window.history['pushState'] = createHistoryEvent('pushState');
         window.history['replaceState'] = createHistoryEvent('replaceState');
-        
+
         return <DefaultOptions>{
             sdkVersion: Version.version,
             historyTracker: false,
@@ -54,13 +54,16 @@ export default class Tracker {
         if (this.data.hashTracker) {
             this.captureEvent(['hashchange'], 'hash-pv')
         }
-        if(this.data.domTracker) {
+        if (this.data.domTracker) {
             this.targetKeyReport();
+        }
+        if(this.data.jsError) {
+            this.jsError();
         }
     }
 
     // 手动上报
-    public sendTracker <T>(data: T) {
+    public sendTracker<T>(data: T) {
         this.reportTracker(data);
     }
 
@@ -82,13 +85,43 @@ export default class Tracker {
             window.addEventListener(ev, (e) => {
                 const target = e.target as HTMLElement;
                 const targetKey = target.getAttribute('target-key');
-                if(targetKey) {
+                if (targetKey) {
                     this.reportTracker({
-                        event:ev,
+                        event: ev,
                         targetKey
                     })
                 }
             })
         })
     }
+
+    // 监听jsError
+    private errEvent() {
+        window.addEventListener('error', (ev) => {
+            this.reportTracker({
+                event:"error",
+                targetKey: 'message',
+                message: ev.message
+            })
+        })
+    }
+
+    // 监听promise错误
+    private promiseReject() {
+        window.addEventListener('unhandledrejection',(event) => {
+            event.promise.catch(error => {
+                this.reportTracker({
+                    event: 'promise',
+                    targetKey: 'message',
+                    message: error
+                })
+            })
+        })
+    }
+
+    private jsError() {
+        this.errEvent();
+        this.promiseReject();
+    }
+
 }
