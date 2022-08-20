@@ -17,11 +17,11 @@ export default [
             {
                 file: path.resolve(__dirname, './dist/sdk.js'),
                 format: "umd",
-                name: 'tracker'
+                name: 'Tracker'
             },
         ],
         plugins: [
-            ts()
+            ts(),
         ]
     },
     {

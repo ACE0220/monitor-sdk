@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
+    "build": "rm -rf ./dist/* && rollup -c",
+    "dev": "rm -rf ./dist/* && rollup -c -w"
   },
   "repository": {
     "type": "git",
